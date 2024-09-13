@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Request System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #22AFB2;
+            border-color: #22AFB2;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .modal-body {
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Login Page -->
+<div id="loginPage" class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Login</h4>
+                </div>
+                <div class="card-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" placeholder="Enter your username">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <p id="error" class="text-danger mt-3"></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Employee Page -->
+<div id="employeePage" class="container mt-5" style="display: none;">
+    <h2>Welcome, Employee!</h2>
+    <a href="#" class="btn btn-primary mt-3" onclick="showRequestTravel()">Request Travel</a>
+    <a href="#" class="btn btn-secondary mt-3" onclick="showEmployeeViewRequests()">View Your Requests</a>
+    <a href="#" class="btn btn-danger mt-3" onclick="showLogin()">Logout</a>
+</div>
+
+<!-- Admin Page -->
+<div id="adminPage" class="container mt-5" style="display: none;">
+    <h2>Welcome, Admin!</h2>
+    <a href="#" class="btn btn-secondary mt-3" onclick="showAdminViewRequests()">View All Requests</a>
+    <a href="#" class="btn btn-danger mt-3" onclick="showLogin()">Logout</a>
+</div>
+
+<!-- Request Travel Page -->
+<div id="requestTravelPage" class="container mt-5" style="display: none;">
+    <h2>Request Travel</h2>
+    <form id="travelRequestForm">
+        <div class="mb-3">
+            <label for="empName" class="form-label">Employee Name</label>
+            <input type="text" class="form-control" id="empName" placeholder="Enter your name" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="fromDate" class="form-label">From Date</label>
+            <input type="date" class="form-control" id="fromDate">
+        </div>
+        <div class="mb-3">
+            <label for="toDate" class="form-label">To Date</label>
+            <input type="date" class="form-control" id="toDate">
+        </div>
+        <div class="mb-3">
+            <label for="destination" class="form-label">Destination</label>
+            <input type="text" class="form-control" id="destination" placeholder="Enter destination">
+        </div>
+        <div class="mb-3">
+            <label for="reason" class="form-label">Reason</label>
+            <textarea class="form-control" id="reason" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="modeOfTravel" class="form-label">Mode of Travel</label>
+            <select class="form-select" id="modeOfTravel">
+                <option value="air">Air</option>
+                <option value="train">Train</option>
+                <option value="car">Car</option>
+                <option value="bus">Bus</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="priority" class="form-label">Priority</label>
+            <select class="form-select" id="priority">
+                <option value="normal">Normal</option>
+                <option value="critical">Critical</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Submit Request</button>
+        <a href="#" class="btn btn-secondary mt-3" onclick="showEmployeePage()">Back to Employee Page</a>
+    </form>
+</div>
+
+<!-- Employee View Requests Page -->
+<div id="employeeViewRequestsPage" class="container mt-5" style="display: none;">
+    <h2>Your Travel Requests</h2>
+    <div class="table-container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Employee Name</th>
+                    <th>From Date</th>
+                    <th>To Date</th>
+                    <th>Destination</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody id="employeeRequestsTableBody">
+                <!-- Rows will be added dynamically -->
+            </tbody>
+        </table>
+    </div>
+    <a href="#" class="btn btn-secondary mt-3" onclick="showEmployeePage()">Back to Employee Page</a>
+</div>
+
+<!-- Admin View Requests Page -->
+<div id="adminViewRequestsPage" class="container mt-5" style="display: none;">
+    <h2>All Travel Requests</h2>
+    <div class="table-container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Employee Name</th>
+                    <th>From Date</th>
+                    <th>To Date</th>
+                    <th>Destination</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody id="adminRequestsTableBody">
+                <!-- Rows will be added dynamically -->
+            </tbody>
+        </table>
+    </div>
+    <a href="#" class="btn btn-secondary mt-3" onclick="showAdminPage()">Back to Admin Page</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let loggedInUser = null;  // Store the logged-in user
+
+    const users = [
+        {username: 'admin', password: 'admin123', role: 'admin'},
+        {username: 'employee1', password: 'emp123', role: 'employee'}
+    ];
+
+    const requests = [
+        {id: 1, empName: 'Sara Mariam', fromDate: '2024-09-01', toDate: '2024-09-05', destination: 'Paris', priority: 'Critical', status: 'Pending', reason: 'Conference', modeOfTravel: 'Air'}
+    ];
+
+    // Show login page
+    function showLogin() {
+        document.getElementById('loginPage').style.display = 'block';
+        document.getElementById('employeePage').style.display = 'none';
+        document.getElementById('adminPage').style.display = 'none';
+        document.getElementById('requestTravelPage').style.display = 'none';
+        document.getElementById('employeeViewRequestsPage').style.display = 'none';
+        document.getElementById('adminViewRequestsPage').style.display = 'none';
+    }
+
+    // Show employee page after login
+    function showEmployeePage() {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('employeePage').style.display = 'block';
+        document.getElementById('adminPage').style.display = 'none';
+        document.getElementById('requestTravelPage').style.display = 'none';
+        document.getElementById('employeeViewRequestsPage').style.display = 'none';
+        document.getElementById('adminViewRequestsPage').style.display = 'none';
+    }
+
+    // Show admin page after login
+    function showAdminPage() {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('employeePage').style.display = 'none';
+        document.getElementById('adminPage').style.display = 'block';
+        document.getElementById('requestTravelPage').style.display = 'none';
+        document.getElementById('employeeViewRequestsPage').style.display = 'none';
+        document.getElementById('adminViewRequestsPage').style.display = 'none';
+    }
+
+    // Show travel request form for employees
+    function showRequestTravel() {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('employeePage').style.display = 'none';
+        document.getElementById('adminPage').style.display = 'none';
+        document.getElementById('requestTravelPage').style.display = 'block';
+        document.getElementById('employeeViewRequestsPage').style.display = 'none';
+        document.getElementById('adminViewRequestsPage').style.display = 'none';
+
+        // Fill employee name automatically based on the logged-in user
+        document.getElementById('empName').value = loggedInUser.username;
+    }
+
+    // Show employee's own requests   
+    function showEmployeeViewRequests() {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('employeePage  ').style.display = 'none';
+        document.getElementById('adminPage').style.display = 'none';
+        document.getElementById('requestTravelPage').style.display = 'none';
+        document.getElementById('employeeViewRequestsPage').style.display = 'block';
+        document.getElementById('adminViewRequestsPage').style.display = 'none';
+
+        populateEmployeeRequestsTable();
+    }
+
+    // Show admin view of all requests
+    function showAdminViewRequests() {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('employeePage').style.display = 'none';
+        document.getElementById('adminPage').style.display = 'none';
+        document.getElementById('requestTravelPage').style.display = 'none';
+        document.getElementById('employeeViewRequestsPage').style.display = 'none';
+        document.getElementById('adminViewRequestsPage').style.display = 'block';
+
+        populateAdminRequestsTable();
+    }
+
+    // Populate employee requests table (show only the logged-in employee's requests)
+    function populateEmployeeRequestsTable() {
+        const tableBody = document.getElementById('employeeRequestsTableBody');
+        tableBody.innerHTML = '';
+        requests.filter(request => request.empName === loggedInUser.username).forEach((request, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${request.empName}</td>
+                <td>${request.fromDate}</td>
+                <td>${request.toDate}</td>
+                <td>${request.destination}</td>
+                <td>${request.priority}</td>
+                <td>${request.status}</td>
+                <td><button class="btn btn-primary" onclick="showRequestDetails(${request.id})">Details</button></td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Populate admin requests table (show all requests)
+    function populateAdminRequestsTable() {
+        const tableBody = document.getElementById('adminRequestsTableBody');
+        tableBody.innerHTML = '';
+        requests.forEach((request, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${request.empName}</td>
+                <td>${request.fromDate}</td>
+                <td>${request.toDate}</td>
+                <td>${request.destination}</td>
+                <td>${request.priority}</td>
+                <td>${request.status}</td>
+                <td><button class="btn btn-primary" onclick="showRequestDetails(${request.id})">Details</button></td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Show request details in a modal
+    function showRequestDetails(requestId) {
+        const request = requests.find(req => req.id === requestId);
+        if (request) {
+            alert(`Details for request by ${request.empName} to ${request.destination}:\nFrom: ${request.fromDate}\nTo: ${request.toDate}\nReason: ${request.reason}`);
+        }
+    }
+
+    // Login form submission handler
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const user = users.find(u => u.username === username && u.password === password);
+
+        if (user) {
+            loggedInUser = user;
+            if (user.role === 'employee') {
+                showEmployeePage();
+            } else if (user.role === 'admin') {
+                showAdminPage();
+            }
+        } else {
+            document.getElementById('error').innerText = 'Invalid username or password.';
+        }
+    });
+
+    // Travel request form submission handler
+    document.getElementById('travelRequestForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const empName = loggedInUser.username;
+        const fromDate = document.getElementById('fromDate').value;
+        const toDate = document.getElementById('toDate').value;
+        const destination = document.getElementById('destination').value;
+        const reason = document.getElementById('reason').value;
+        const modeOfTravel = document.getElementById('modeOfTravel').value;
+        const priority = document.getElementById('priority').value;
+
+        requests.push({
+            id: requests.length + 1,
+            empName,
+            fromDate,
+            toDate,
+            destination,
+            reason,
+            modeOfTravel,
+            priority,
+            status: 'Pending'
+        });
+
+        alert('Travel request submitted!');
+        showEmployeePage();
+    });
+</script>
+
+</body>
+</html>
